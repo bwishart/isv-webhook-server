@@ -12,12 +12,58 @@ AUTH_ENCODED=`echo -n "${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}" | base64`
 curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "operation": "risk",
-    "parameters": {
-      "username": "scott"
+    "sessionContext": {
+        "uid": "scott1111",
+        "sessionID": "98765432-222",
+        "emailAddr": "scott1111@yopmail.com",
+        "mobileNumber": "9057772222"
     },
-    "requestedAttributes": ["cn", "mobile_number", "displayName"]
+    "attributeContext": {
+        "ipAddress": "10.0.0.1",
+        "evaluationData": "eval data"
+    },
+    "policyContext": {
+        "id": "98777",
+        "policyName": "policy name 98777"
+    },
+    "adaptiveContext": {},
+    "customAttriibutes": {},
+    "authnMethods": []
 }'
+
+# curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
+# --header 'Content-Type: application/json' \
+# --data-raw '{
+#     "sessionContext": {
+#         "uid": "alice2222",
+#         "sessionID": "98765432-222",
+#         "emailAddr": "alice2222@yopmail.com",
+#         "mobileNumber": "9057772222"
+#     },
+#     "attributeContext": {
+#         "ipAddress": "10.0.0.1",
+#         "evaluationData": "eval data"
+#     },
+#     "policyContext": {
+#         "id": "98777",
+#         "policyName": "policy name 98777"
+#     },
+#     "adaptiveContext": {},
+#     "customAttriibutes": {},
+#     "authnMethods": []
+# }'
+
+
+
+# curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
+# --header 'Content-Type: application/json' \
+# --data-raw '{
+#     "operation": "risk",
+#     "parameters": {
+#       "username": "scott"
+#     },
+#     "requestedAttributes": ["cn", "mobile_number", "displayName"]
+# }'
 
 # curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
 # --header 'Content-Type: application/json' \

@@ -12,10 +12,12 @@ const respondLog = (responseBody, res) => {
 const handleRisk = (req, res, data_source) => {
     // Get the relevant properties from the request body
     // const operation             = req.body.operation;
-    const parameters            = req.body.parameters;
+    const operation = 'risk'
+    //const parameters            = req.body.parameters;
+    const sessionContext        = req.body.sessionContext
 
     // INVALID_PARAMETERS if the parameters property doesn't exist
-    if (!parameters) {
+    if (!sessionContext) {
         respondLog({
             operation, 
             status: {
@@ -27,7 +29,8 @@ const handleRisk = (req, res, data_source) => {
     }
 
     // Get the parameters
-    const username              = parameters.username;
+    const username = sessionContext.uid
+    //const username              = parameters.username;
    //  const password              = parameters.password;
 
     // INVALID_PARAMETERS if username missing from request
@@ -75,22 +78,6 @@ const handleRisk = (req, res, data_source) => {
         },
         "version": "1.1"
     }
-    // let responseBody = {
-    //     operation, 
-    //     status: {
-    //         result: "SUCCESS"
-    //     },
-    //     parameters: {
-    //         groups: [],
-    //         user: {
-
-    //         }
-    //     }
-    // }
-
-
-     // Insert the groups into the response
-     // responseBody.parameters.groups = data_source[username].groups;
      
     // Return the successful response with the response code 200 as per the specification
     respondLog(responseBody, res);
