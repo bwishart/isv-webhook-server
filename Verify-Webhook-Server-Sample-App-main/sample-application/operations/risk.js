@@ -64,6 +64,7 @@ const handleRisk = (req, res, data_source) => {
     // const score = '80'
     const category = data_source[username].category
     const score = data_source[username].score
+    const mfaAction = data_source[username].action
 
     // Create the successful response
     let responseBody = {
@@ -73,7 +74,7 @@ const handleRisk = (req, res, data_source) => {
         },
         integrationId: "50eb741b-885c-4621-8c32-b514d2bada76",
         result: { 
-            action : "ACTION_MFA_ALWAYS",
+            action : mfaAction,
             message : "Risk response returned from handleRisk webhook response username: " + username
         },
         "version": "1.1"

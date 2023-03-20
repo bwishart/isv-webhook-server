@@ -13,6 +13,7 @@ data_source = {
         cn: "Scott Admin",
         category: "device",
         score: "90",
+        action: "ACTION_MFA_ALWAYS",
         employee_number: "AG38US",
         mobile_number: "111-222-3333",
         accountLocked: false,
@@ -38,6 +39,7 @@ data_source = {
         cn: "Alice Developer",
         category: "device",
         score: "0",
+        action: "ACTION_ALLOW",
         employee_number: "CS22US",
         mobile_number: "555-555-5555",
         accountLocked: false,
@@ -49,52 +51,20 @@ data_source = {
             }
         ]
     },
-    jessica: {
+    jessica3333: {
         id: 3,
         password: "jessica11111",
         displayName: "Jess",
         givenName: "Jessica",
         SN: "User",
-        emailAddress: "alice@fake-email.com",
+        emailAddress: "jessica3333@yopmail.com",
         cn: "Jessica User",
         category: "device",
         score: "90",
+        action: "ACTION_MFA_ALWAYS",
         employee_number: "MA86US",
         mobile_number: "555-555-5555",
         accountLocked: false,
-        passwordExpired: false,
-        groups: []
-    },
-    jon: {
-        id: 4,
-        password: "jon11111",
-        displayName: "JohnU",
-        givenName: "John",
-        SN: "User",
-        emailAddress: "jon@fake-email.com",
-        cn: "John User",
-        category: "device",
-        score: "10",
-        employee_number: "AB54AU",
-        mobile_number: "222-333-4444",
-        accountLocked: false,
-        passwordExpired: true,
-        groups: []
-
-    },
-    bon: {
-        id: 5,
-        password: "bon11111",
-        displayName: "BonnieU",
-        givenName: "Bonnie",
-        SN: "User",
-        emailAddress: "bon@fake-email.com",
-        cn: "Bonnie User",
-        category: "device",
-        score: "40",
-        employee_number: "AD24UK",
-        mobile_number: "333-444-5555",
-        accountLocked: true,
         passwordExpired: false,
         groups: []
     }
