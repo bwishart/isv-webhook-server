@@ -37,12 +37,14 @@ const PATH_TO_KEY   = 'certs/extauthn.agent.key';     // Location of the certifi
 const PATH_TO_CA    = 'certs/extauthn.caroot.crt';    // Location of the certificate authority cert
 
 // HTTPS config will go here
+if (useTLS) {
 const httpsServerConfig = {
     key: fs.readFileSync(PATH_TO_KEY),
     cert: fs.readFileSync(PATH_TO_CRT),
     ca: fs.readFileSync(PATH_TO_CA),
     requestCert: true,
     rejectUnauthorized: false,
+}
 }
 
 // Logger request headers

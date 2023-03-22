@@ -9,7 +9,7 @@ cd $CERT_PATH
 
 AUTH_ENCODED=`echo -n "${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}" | base64`
 
-curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
+curl -i -v --location --insecure --request POST "https://bwishart-isv-webhook-server.herokuapp.com/risk" \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "sessionContext": {
@@ -31,7 +31,7 @@ curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SER
     "authnMethods": []
 }'
 
-# curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
+# curl -i -v --location --insecure --request POST "https://bwishart-isv-webhook-server.herokuapp.com/risk" \
 # --header 'Content-Type: application/json' \
 # --data-raw '{
 #     "sessionContext": {
@@ -52,3 +52,28 @@ curl -i --location --cacert $CA_CERT_NAME --request POST "https://${EXTAUTHN_SER
 #     "customAttriibutes": {},
 #     "authnMethods": []
 # }'
+
+
+# curl -i -v --location --insecure --request POST "https://bwishart-isv-webhook-server.herokuapp.com/risk" \
+# --header 'Content-Type: application/json' \
+# --data-raw '{
+#     "sessionContext": {
+#         "preferredUsername": "jessica3333",
+#         "sessionID": "98765432-222",
+#         "emailAddr": "jessica3333@yopmail.com",
+#         "mobileNumber": "9054446666"
+#     },
+#     "attributeContext": {
+#         "ipAddress": "10.0.0.1",
+#         "evaluationData": "eval data"
+#     },
+#     "policyContext": {
+#         "id": "98777",
+#         "policyName": "policy name 98777"
+#     },
+#     "adaptiveContext": {},
+#     "customAttriibutes": {},
+#     "authnMethods": []
+# }'
+
+

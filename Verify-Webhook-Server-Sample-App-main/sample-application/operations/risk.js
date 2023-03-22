@@ -29,7 +29,8 @@ const handleRisk = (req, res, data_source) => {
     }
 
     // Get the parameters
-    const username = sessionContext.uid
+    const username = sessionContext.preferredUsername
+    
     //const username              = parameters.username;
    //  const password              = parameters.password;
 
