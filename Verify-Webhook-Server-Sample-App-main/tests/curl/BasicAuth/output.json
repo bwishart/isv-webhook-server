@@ -1,0 +1,12 @@
+{
+    "attributes": {
+        "XFE-IP-Category": "device",
+        "XFE-IP-Score": "90"
+    },
+    "integrationId": "50eb741b-885c-4621-8c32-b514d2bada76",
+    "result": {
+        "action": "ACTION_MFA_ALWAYS",
+        "message": "Risk response returned from handleRisk webhook response username: scott"
+    },
+    "version": "1.1"
+}

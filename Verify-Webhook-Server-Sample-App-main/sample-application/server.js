@@ -23,7 +23,10 @@ const oauth                     = require('./authentication/oauth');
 const log                       = require('./utils/log.js')(process.env.LOGGER_PREFIX);
 
 // Define the ports
-const TLS_PORT                  = process.env.PORT;
+//const TLS_PORT                  = process.env.PORT;
+const port = process.env.PORT || 8000
+const useTLS = process.env.USE_TLS 
+console.log('in server.js port:', port,' useTLS: ', useTLS)
 
 // Connect to the database (just a json object in this example)
 data_source                     = require('./data_source/data_source.js');
@@ -44,7 +47,7 @@ const httpsServerConfig = {
 
 // Logger request headers
 app.use((req, res, next) => {
-    log(`\nRequest headers recieved:`);
+    log(`\nRequest headers received:`);
     log(JSON.stringify(req.headers));
     next();
 });
@@ -106,7 +109,13 @@ app.post("/action", (req, res) => {
     }
 });
 
-//Create the https server
-const httpsServer = https.createServer(httpsServerConfig, app).listen(TLS_PORT, () => {
-    log(`HTTPS Listening on port \t ${TLS_PORT}`);
-});
+//Create the server
+if (useTLS) {
+    const httpsServer = https.createServer(httpsServerConfig, app).listen(port, () => {
+        log(`HTTPS Listening on port \t ${port}`);
+    });
+} else {
+    app.listen(port, () => {
+        console.log('HTTP Listening on port: ' + port)
+        })
+}
