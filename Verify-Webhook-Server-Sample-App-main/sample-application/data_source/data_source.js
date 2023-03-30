@@ -16,8 +16,10 @@ data_source = {
         action: "ACTION_MFA_ALWAYS",
         employee_number: "AG38US",
         mobile_number: "111-111-1111",
+        mobile_number_alt: "555-555-5555",
         deviceName: "scott1111-deviceName",
         deviceId: "scott1111-deviceId",
+        deviceIdAlt: "scott1111-deviceIdAlt",
         accountLocked: false,
         passwordExpired: false,
         groups: [
@@ -44,8 +46,10 @@ data_source = {
         action: "ACTION_ALLOW",
         employee_number: "CS22US",
         mobile_number: "222-222-2222",
+        mobile_number_alt: "777-777-7777",
         deviceName: "alice2222-deviceName",
         deviceId: "alice2222-deviceId",
+        deviceIdAlt: "alice2222-deviceIdAlt",
         accountLocked: false,
         passwordExpired: false,
         groups: [
@@ -68,8 +72,10 @@ data_source = {
         action: "ACTION_ALLOW",
         employee_number: "MA86US",
         mobile_number: "333-333-3333",
+        mobile_number_alt: "888-888-8888",
         deviceName: "jessica3333-deviceName",
         deviceId: "jessica3333-deviceId",
+        deviceIdAlt: "jessica3333-deviceIdAlt",
         accountLocked: false,
         passwordExpired: false,
         groups: []

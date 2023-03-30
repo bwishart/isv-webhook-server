@@ -55,11 +55,14 @@ const handleMfaEnrollments = (req, res, data_source) => {
     // const score = data_source[username].score
     // const mfaAction = data_source[username].action
     const mobileNumber = data_source[username].mobile_number
+    const mobileNumberAlt = data_source[username].mobile_number_alt
     const emailAddress = data_source[username].emailAddress
     const deviceName = data_source[username].deviceName
     const deviceId = data_source[username].deviceId
+    const deviceIdAlt = data_source[username].deviceIdAlt
 
     // Create the successful response
+
     let responseBody = 
         [
             {
@@ -70,8 +73,30 @@ const handleMfaEnrollments = (req, res, data_source) => {
                 },
                 "capability": "smsotp",
                 "id": deviceId
+            },
+            {
+                "attributes": {
+                    "authExecutionFlow": "init_then_validate",
+                    "deliveryAddress": mobileNumberAlt,
+                    "deviceName": deviceName
+                },
+                "capability": "smsotp",
+                "id": deviceIdAlt
             }
         ]
+
+    // let responseBody = 
+    //     [
+    //         {
+    //             "attributes": {
+    //                 "authExecutionFlow": "init_then_validate",
+    //                 "deliveryAddress": mobileNumber,
+    //                 "deviceName": deviceName
+    //             },
+    //             "capability": "smsotp",
+    //             "id": deviceId
+    //         }
+    //     ]
 
      
     // Return the successful response with the response code 200 as per the specification
