@@ -12,6 +12,9 @@ const handlePasswordVerify      = require('./operations/password-verify');
 const handleGetStatus           = require('./operations/get-status');
 const handlePasswordChange      = require('./operations/password-change');
 const handleRisk                = require('./operations/risk');
+const handleMfaEnrollments      = require('./operations/mfa-enrollments');
+const handleMfaInitiate         = require('./operations/mfa-initiate');
+const handleMfaValidate         = require('./operations/mfa-validate');
 const app                       = express();
 const basicAuthen               = require('./authentication/basicAuthen');
 const mtls                      = require('./authentication/mtls');
@@ -47,6 +50,14 @@ const httpsServerConfig = {
 }
 }
 
+// Logger request url
+app.use((req, res, next) => {
+    log(`\nURL Received:`);
+    log(JSON.stringify(req.originalUrl));
+    next();
+});
+
+
 // Logger request headers
 app.use((req, res, next) => {
     log(`\nRequest headers received:`);
@@ -74,7 +85,6 @@ app.use((req, res, next) => {
 
 
 app.get('/risk', (req, res) => {
-    // handleRisk(req, res)
     res.send('GET is not supported, use POST')
 })
 
@@ -87,29 +97,66 @@ app.post('/risk', (req, res) => {
     }
 })
 
-app.post("/action", (req, res) => {
-    // Get the operation from the request
-    const operation = req.body.operation;
-
-    switch (operation) {
-        case "password-verify":
-            // Logic to handle the password verify operation
-            handlePasswordVerify(req, res, data_source);
-            break;
-        case "password-change":
-            // Logic to handle the password change operation goes here
-            handlePasswordChange(req, res, data_source);
-            break;
-        case "get-status":
-            // Logic to handle the get-status operation goes here
-            handleGetStatus(req, res);
-            break;
-        default:
-            // Logic to handle invalid operation
-            handleInvalidOperation(req, res);
-        break;
+app.post('/enrollments', (req, res) => {
+    if (!req.body) {
+        res.send('req.body is undefined')
+        console.log('req.body is undefined')
+    } else {
+       handleMfaEnrollments(req, res, data_source)
     }
-});
+})
+
+app.post('/initiate', (req, res) => {
+    if (!req.body) {
+        res.send('req.body is undefined')
+        console.log('req.body is undefined')
+    } else {
+       handleMfaInitiate(req, res, data_source)
+    }
+})
+
+app.post('/validate', (req, res) => {
+    if (!req.body) {
+        res.send('req.body is undefined')
+        console.log('req.body is undefined')
+    } else {
+       handleMfaValidate(req, res, data_source)
+    }
+})
+
+// app.post("/action", (req, res) => {
+//     // Get the operation from the request
+//     const operation = req.body.operation;
+
+//     switch (operation) {
+//         case "password-verify":
+//             // Logic to handle the password verify operation
+//             handlePasswordVerify(req, res, data_source);
+//             break;
+//         case "password-change":
+//             // Logic to handle the password change operation goes here
+//             handlePasswordChange(req, res, data_source);
+//             break;
+//         case "get-status":
+//             // Logic to handle the get-status operation goes here
+//             handleGetStatus(req, res);
+//             break;
+//         default:
+//             // Logic to handle invalid operation
+//             handleInvalidOperation(req, res);
+//         break;
+//     }
+// });
+
+
+
+
+app.get('*', (req, res) => {
+    const badurl = req.originalUrl
+    console.log("URL: " + badurl + " not found")
+    res.status(404).json("URL: " + badurl + " not found");
+    // res.send('URL not found')
+})
 
 //Create the server
 if (useTLS) {

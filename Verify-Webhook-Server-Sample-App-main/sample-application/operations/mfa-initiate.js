@@ -9,27 +9,28 @@ const respondLog = (responseBody, res) => {
     log(JSON.stringify(responseBody));
 }
 
-const handleRisk = (req, res, data_source) => {
+const handleMfaInitiate = (req, res, data_source) => {
     // Get the relevant properties from the request body
     // const operation             = req.body.operation;
-    const operation = 'risk'
+    const operation = 'mfa-initiate'
     //const parameters            = req.body.parameters;
-    const sessionContext        = req.body.sessionContext
+    // const sessionContext        = req.body.sessionContext
 
-    // INVALID_PARAMETERS if the parameters property doesn't exist
-    if (!sessionContext) {
+    // Get the parameters
+
+    const attributes = req.body.attributes
+    if (!attributes) {
         respondLog({
             operation, 
             status: {
                 result: "INVALID_PARAMETERS",
-                message: "sessionContext property missing from request"
+                message: "attribute is missing from the request parameters"
             }
         }, res);
         return;
     }
 
-    // Get the parameters
-    const username = sessionContext.preferredUsername
+    const username = req.body.attributes.username
     
     //const username              = parameters.username;
    //  const password              = parameters.password;
@@ -63,28 +64,30 @@ const handleRisk = (req, res, data_source) => {
 
     // const category = 'test'
     // const score = '80'
-    const category = data_source[username].category
-    const score = data_source[username].score
-    const mfaAction = data_source[username].action
+    // const category = data_source[username].category
+    // const score = data_source[username].score
+    // const mfaAction = data_source[username].action
+    const mobileNumber = data_source[username].mobile_number
+    const emailAddress = data_source[username].emailAddress
+    const deviceName = data_source[username].deviceName
+    const deviceId = data_source[username].deviceId
 
     // Create the successful response
-    let responseBody = {
-        attributes: {
-            "XFE-IP-Category": category,
-            "XFE-IP-Score": score
-        },
-        integrationId: "50eb741b-885c-4621-8c32-b514d2bada76",
-        result: { 
-            action : mfaAction,
-            message : "Risk response returned from handleRisk webhook response username: " + username
-        },
-        "version": "1.1"
-    }
+    let responseBody = 
+            {
+                "attributes": {
+                    "EXTMFAAttr": mobileNumber
+                },
+                "status" : "SUCCESS",
+                "transactionId" : "aaa-aaa-111-111"
+            }
+
      
     // Return the successful response with the response code 200 as per the specification
     respondLog(responseBody, res);
 }
 
 
-module.exports = handleRisk
+module.exports = handleMfaInitiate
+
 

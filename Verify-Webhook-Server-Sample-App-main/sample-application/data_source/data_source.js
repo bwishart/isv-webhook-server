@@ -15,7 +15,9 @@ data_source = {
         score: "Medium",
         action: "ACTION_MFA_ALWAYS",
         employee_number: "AG38US",
-        mobile_number: "111-222-3333",
+        mobile_number: "111-111-1111",
+        deviceName: "scott1111-deviceName",
+        deviceId: "scott1111-deviceId",
         accountLocked: false,
         passwordExpired: false,
         groups: [
@@ -41,7 +43,9 @@ data_source = {
         score: "High",
         action: "ACTION_ALLOW",
         employee_number: "CS22US",
-        mobile_number: "555-555-5555",
+        mobile_number: "222-222-2222",
+        deviceName: "alice2222-deviceName",
+        deviceId: "alice2222-deviceId",
         accountLocked: false,
         passwordExpired: false,
         groups: [
@@ -63,7 +67,9 @@ data_source = {
         score: "Low",
         action: "ACTION_ALLOW",
         employee_number: "MA86US",
-        mobile_number: "555-555-5555",
+        mobile_number: "333-333-3333",
+        deviceName: "jessica3333-deviceName",
+        deviceId: "jessica3333-deviceId",
         accountLocked: false,
         passwordExpired: false,
         groups: []
