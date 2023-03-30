@@ -74,13 +74,21 @@ const handleMfaInitiate = (req, res, data_source) => {
 
     // Create the successful response
     let responseBody = 
-            {
-                "attributes": {
-                    "EXTMFAAttr": mobileNumber
-                },
-                "status" : "SUCCESS",
-                "transactionId" : "aaa-aaa-111-111"
-            }
+    {
+        "attributes": {
+            "EXTMFAAttr": mobileNumber
+        },
+        "status" : "PENDING",
+        "transactionId" : "aaa-aaa-111-111"
+    }
+    // let responseBody = 
+    //         {
+    //             "attributes": {
+    //                 "EXTMFAAttr": mobileNumber
+    //             },
+    //             "status" : "SUCCESS",
+    //             "transactionId" : "aaa-aaa-111-111"
+    //         }
 
      
     // Return the successful response with the response code 200 as per the specification
