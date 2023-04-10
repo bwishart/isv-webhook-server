@@ -72,7 +72,7 @@ PORT=8000
 ```
 Use the following curl scripts:
 ```bash
-cd <download dir>/Verify-Webhook-Server-Sample-App-main/tests/curl/BasicAuth
+cd <download dir>/Verify-Webhook-Server-Sample-App-main/tests/curl/NoAuth
 ./risk-noauth-http.sh
 ./mfa-enrollments-noauth-http.sh
 ./mfa-initiate-noauth-http.sh
@@ -105,7 +105,9 @@ The following collection is augmented from the original MSU ISV Webhooks Live La
 ```bash
 cd <download dir>/Verify-Webhook-Server-Sample-App-main/postman
 ```
-The file is "MSU 2022-Webhooks Config for isv-webhook-server.postman.collection"`
+The file is "MSU 2022-Webhooks Config for isv-webhook-server 10April2023.postman.collection"`
+You will have to update the variables to match the environment you created with the MSU original lab
+
 
 7. Create the webhook configurations
 As performed in the MSU Webhook Lab Guide, modify the collections and URLs to suite your tenant.
@@ -115,8 +117,8 @@ You might need to manually delete a previous /risk webhook from within the Verif
 - under "Integrations..Realtime Webhooks" delete the risk webhook
 Then execute the following to create the webhooks:
 	- "Get access token"
-	- "Create 3rd Party Risk Webhook - XFE v2"
-	- "Create 3rd Party Risk Integration - XFE v2"
+	- "Create 3rd Party Risk Webhook - XFE iamlab"
+	- "Create 3rd Party Risk Integration - XFE iamlab"
 	- "Create 3rd Party MFA Webhook - iamlab"
 	- "Create 3rd Party MFA Provider - iamlab"
 	- "Create Adaptive and XFE IP Reputation Policy"
