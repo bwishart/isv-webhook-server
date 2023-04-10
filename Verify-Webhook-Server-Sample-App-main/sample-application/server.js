@@ -7,10 +7,10 @@ require('dotenv').config()
 const https                     = require('https');
 const express                   = require('express');
 const fs                        = require('fs');
-const handleInvalidOperation    = require('./operations/invalid-operation');
-const handlePasswordVerify      = require('./operations/password-verify');
-const handleGetStatus           = require('./operations/get-status');
-const handlePasswordChange      = require('./operations/password-change');
+// const handleInvalidOperation    = require('./operations/invalid-operation');
+// const handlePasswordVerify      = require('./operations/password-verify');
+// const handleGetStatus           = require('./operations/get-status');
+// const handlePasswordChange      = require('./operations/password-change');
 const handleRisk                = require('./operations/risk');
 const handleMfaEnrollments      = require('./operations/mfa-enrollments');
 const handleMfaInitiate         = require('./operations/mfa-initiate');

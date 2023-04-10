@@ -9,12 +9,15 @@ cd $CERT_PATH
 
 AUTH_ENCODED=`echo -n "${BASIC_AUTH_USERNAME}:${BASIC_AUTH_PASSWORD}" | base64`
 
-curl -i --location  --request POST "http://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/initiate" \
+curl -i --location  --request POST "http://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/validate" \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "capability" : "smsotp",
-    "id" : "scott1111-deviceId", 
+    "capability" : "iamlab:smsotp",
+    "id" : "scott1111-deviceIdAlt", 
+    "transactionId" : "aaa-aaa-111-111",
     "attributes" : {
-        "username": "scott1111"
+        "passvalue" : "654321",
+        "username" : "scott1111",
+        "number":2
     }
 }'

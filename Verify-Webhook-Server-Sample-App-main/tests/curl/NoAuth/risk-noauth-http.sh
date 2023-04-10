@@ -16,19 +16,23 @@ curl -i --location  --request POST "http://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SE
         "preferredUsername": "scott1111",
         "sessionID": "98765432-222",
         "emailAddr": "scott1111@yopmail.com",
-        "mobileNumber": "9057772222"
+        "mobileNumber": "9057772222",
+        "userType":"regular",
+        "uid":"6430023HCA"
     },
     "attributeContext": {
         "ipAddress": "10.0.0.1",
+        "appId":"8734904324827838350",
         "evaluationData": "eval data"
     },
     "policyContext": {
         "id": "98777",
+        "name":"MSU 2022 Adaptive and XFE IP Reputation",
         "policyName": "policy name 98777"
     },
     "adaptiveContext": {},
-    "customAttriibutes": {},
-    "authnMethods": []
+    "customAttributes":{"ecifid":["1111"]},
+    "authnMethods":["anyFactor"]
 }'
 
 # curl -i --location  --request POST "http://${EXTAUTHN_SERVER_HOST}:${EXTAUTHN_SERVER_PORT}/risk" \
