@@ -1,0 +1,1387 @@
+{
+	"info": {
+		"_postman_id": "6ad0d972-367f-4e29-8cd0-3c474e208f3a",
+		"name": "MSU 2022: Webhooks Config",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3394686"
+	},
+	"item": [
+		{
+			"name": "Get access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractAccessToken\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.access_token) {",
+							"        pm.collectionVariables.set(\"access_token\", jsonData.access_token);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "{{client_id}}",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "client_secret",
+							"value": "{{client_secret}}",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "client_id",
+							"value": "{{wh_client_id}}",
+							"type": "text"
+						},
+						{
+							"key": "client_secret",
+							"value": "{{wh_client_secret}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{tenant}}/oidc/endpoint/default/token",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"oidc",
+						"endpoint",
+						"default",
+						"token"
+					]
+				},
+				"description": "Use Security Verify's API Access to create an API client with the appropriate entitlements to access the desired APIs."
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Webhooks",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "json",
+						"value": "true"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Notification Webhook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"notification_webhook_id\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"msu2022_user_profile_hookV2\",\n    \"type\": \"notification\",\n    \"urls\": [\n        \"{{webhook_url}}\"\n    ],\n    \"purpose\": [\n        \"notifications\"\n    ],\n    \"notification\": {\n        \"interests\": [\n            {\n                \"name\": \"management events\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"user\"\n                    }\n                ]\n            },\n            {\n                \"name\": \"consent activity\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"privacy_consent\"\n                    }\n                ]\n            },\n            {\n                \"name\": \"risk activity\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"event_type\",\n                        \"value\": \"risk\"\n                    }\n                ]\n            },\n            {\n                \"name\": \"adaptive risk activity\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"event_type\",\n                        \"value\": \"adaptive_risk\"\n                    }\n                ]\n            }\n        ],\n        \"enabled\": true\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Notification Webhook with Transform",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"notification_webhook_id\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"msu2022_user_profile_hook_with_transform\",\n    \"type\": \"notification\",\n    \"transform\": {\n        \"outgoing\": \"statements:\\r\\n- context: \\\"isConsentEvent := (body.data.resource == 'privacy_consent')\\\"\\r\\n- if:\\r\\n    match: context.isConsentEvent\\r\\n    block:\\r\\n      - context: \\\"d := body['data']\\\"\\r\\n      - context: \\\"d = context.d.put('consent_state_id', context.d['consent_state']).put('consent_state', {1: 'accept', 2: 'deny', 3: 'opt_in', 4: 'opt_out', 5: 'transparent'}[int(context.d['consent_state'])])\\\"\\r\\n      - return: \\\"{'header': header.put('date', formatTime(now, '02 Jan 06 15:04 -0700')).put('accept', 'application\\/json'), 'body': body.put('data', context.d) }\\\"\\r\\n- return: \\\"{'header': header.put('date', formatTime(now, '02 Jan 06 15:04 -0700')).put('accept', 'application\\/json'), 'body': body}\\\"\"\n    },\n    \"urls\": [\n        \"{{webhook_url_for_transform}}\"\n    ],\n    \"purpose\": [\n        \"notifications\"\n    ],\n    \"notification\": {\n        \"interests\": [\n            {\n                \"name\": \"management events\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"user\"\n                    }\n                ]\n            },\n            {\n                \"name\": \"consent activity\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"privacy_consent\"\n                    }\n                ]\n            }\n        ],\n        \"enabled\": true\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify Notification Webhook",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"msu2022_user_profile_hook_with_transform\",\n    \"type\": \"notification\",\n    \"urls\": [\n        \"{{webhook_url}}\"\n    ],\n    \"purpose\": [\n        \"notifications\"\n    ],\n    \"notification\": {\n        \"interests\": [\n            {\n                \"name\": \"management events\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"user\"\n                    }\n                ]\n            },\n            {\n                \"name\": \"consent activity\",\n                \"description\": \"\",\n                \"clauses\": [\n                    {\n                        \"operation\": \"include\",\n                        \"key\": \"data.resource\",\n                        \"value\": \"privacy_consent\"\n                    }\n                ]\n            }\n        ],\n        \"enabled\": true\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/{{notification_webhook_id}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						"{{notification_webhook_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Notification Webhook",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/{{notification_webhook_id}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						"{{notification_webhook_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Notification Webhook Stats",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "json",
+						"value": "true"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/{{notification_webhook_id}}/stats",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						"{{notification_webhook_id}}",
+						"stats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party MFA Webhook - DUO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"duo_webhook_id\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"DUO MFA Provider\",\n    \"type\": \"realtime\",\n    \"urls\": [\"{{duo_url}}\"],\n    \"authentication\": {\n        \"type\": \"header\",\n        \"header\": {\n            \"values\":[\n                {\n                    \"key\": \"hdr_integration_key\",\n                    \"value\": \"{{duo_integration_key}}\"\n                },\n                {\n                    \"key\": \"hdr_signing_key\",\n                    \"value\": \"{{duo_signing_key}}\"\n                }\n            ]\n        }\n    },\n    \"resources\": {\n        \"test\": {\n            \"suffix\": \"/auth/v2/check\",\n            \"method\": \"GET\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'), method.toUpper(), host, path.toLower(), \\\"\\\"], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.stat) ? {\\\"status\\\": body.stat == \\\"OK\\\" ? \\\"SUCCESS\\\" : \\\"FAILED\\\", \\\"attributes\\\": body} : {\\\"status\\\": \\\"FAILED\\\"}}\"\n            }\n        },\n        \"enrollments\": {\n            \"suffix\": \"/auth/v2/preauth\",\n            \"method\": \"POST\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"body\\\":jsonToFormURLEncoded({\\\"username\\\":body.username}, true), \\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"content-type\\\", \\\"application/x-www-form-urlencoded\\\").put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'),method.toUpper(), host, path.toLower(), jsonToFormURLEncoded({\\\"username\\\":body.username}, true)], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.response) && has(body.response.devices) ? body.response.devices.map(d, d.capabilities.filter(c, c != \\\"auto\\\").map(c, {\\\"id\\\": d.device, \\\"capability\\\": c == \\\"mobile_otp\\\" ? \\\"hotp\\\" : c == \\\"sms\\\" ? \\\"smsotp\\\" : c, \\\"attributes\\\": {\\\"deviceName\\\": has(d.name) ? d.name : \\\"\\\", \\\"deliveryAddress\\\": has(d.number) ? d.number : \\\"\\\", \\\"authExecutionFlow\\\": c == \\\"mobile_otp\\\" ? \\\"validate\\\" : c == \\\"push\\\" ? \\\"init_then_poll\\\" : \\\"init_then_validate\\\"}})).flatten() : []}\"\n            }\n        },\n        \"initiate\": {\n            \"suffix\": \"/auth/v2/auth\",\n            \"method\": \"POST\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"body\\\":jsonToFormURLEncoded({\\\"async\\\":\\\"1\\\", \\\"device\\\":body.id, \\\"factor\\\": body.capability == \\\"smsotp\\\" ? \\\"sms\\\" : body.capability, \\\"username\\\":body.attributes.username}, true), \\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"content-type\\\", \\\"application/x-www-form-urlencoded\\\").put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'),method.toUpper(), host, path.toLower(), jsonToFormURLEncoded({\\\"async\\\":\\\"1\\\", \\\"device\\\":body.id, \\\"factor\\\": body.capability == \\\"smsotp\\\" ? \\\"sms\\\" : body.capability, \\\"username\\\":body.attributes.username}, true)], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.response) && has(body.response.txid) ? {\\\"transactionId\\\": body.response.txid, \\\"status\\\": \\\"PENDING\\\"} : {\\\"status\\\": \\\"FAILED\\\"}}\"\n            }\n        },\n        \"validate\": {\n            \"suffix\": \"/auth/v2/auth\",\n            \"method\": \"POST\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"body\\\":jsonToFormURLEncoded({\\\"factor\\\": \\\"passcode\\\", \\\"passcode\\\": body.attributes.passvalue, \\\"username\\\":body.attributes.username}, true), \\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"content-type\\\", \\\"application/x-www-form-urlencoded\\\").put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'),method.toUpper(), host, path.toLower(), jsonToFormURLEncoded({\\\"factor\\\": \\\"passcode\\\", \\\"passcode\\\": body.attributes.passvalue, \\\"username\\\":body.attributes.username}, true)], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.response) && has(body.response.result) ? {\\\"status\\\": body.response.result == \\\"allow\\\" ? \\\"SUCCESS\\\" : \\\"FAILED\\\", \\\"attributes\\\": body.response} : {\\\"status\\\": \\\"FAILED\\\"}}\"\n            }\n        },\n        \"hotp_1\": {\n            \"suffix\": \"/auth/v2/auth\",\n            \"method\": \"POST\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"body\\\":jsonToFormURLEncoded({\\\"factor\\\": \\\"passcode\\\", \\\"passcode\\\": body.attributes.passvalue, \\\"username\\\":body.attributes.username}, true), \\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"content-type\\\", \\\"application/x-www-form-urlencoded\\\").put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'),method.toUpper(), host, path.toLower(), jsonToFormURLEncoded({\\\"factor\\\": \\\"passcode\\\", \\\"passcode\\\": body.attributes.passvalue, \\\"username\\\":body.attributes.username}, true)], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.response) && has(body.response.result) ? {\\\"status\\\": body.response.result == \\\"allow\\\" ? \\\"SUCCESS\\\" : \\\"FAILED\\\", \\\"attributes\\\": body.response} : {\\\"status\\\": \\\"FAILED\\\"}}\"\n            }\n        },\n        \"result\": {\n            \"suffix\": \"/auth/v2/auth_status\",\n            \"method\": \"GET\",\n            \"transform\": {\n                \"outgoing\": \"{\\\"query\\\": {\\\"txid\\\": body.transactionId}, \\\"skip_authentication\\\": true, \\\"header\\\": header.put(\\\"date\\\", formatTime(now, '02 Jan 06 15:04 -0700')).put(\\\"content-type\\\", \\\"application/x-www-form-urlencoded\\\").put(\\\"accept\\\", \\\"application/json\\\").put(\\\"authorization\\\", \\\"Basic \\\" + joinStrings([authentication_header.hdr_integration_key, hmacSha1(joinStrings([formatTime(now, '02 Jan 06 15:04 -0700'),method.toUpper(), host, path.toLower(), jsonToFormURLEncoded({\\\"txid\\\": body.transactionId}, true)], \\\"\\\\n\\\"), authentication_header.hdr_signing_key)], \\\":\\\").base64Encode())}\",\n                \"incoming\": \"{\\\"body\\\": has(body.response) && has(body.response.result) ? {\\\"status\\\": body.response.result == \\\"allow\\\" ? \\\"SUCCESS\\\" : body.response.result == \\\"waiting\\\" || (body.response.result == \\\"deny\\\" && body.response.status == \\\"sent\\\") ?\\\"PENDING\\\" : body.response.status == \\\"timeout\\\" ? \\\"TIMEOUT\\\" : \\\"FAILED\\\", \\\"attributes\\\": body.response} : {\\\"status\\\": \\\"FAILED\\\"}}\"\n            }\n        }\n    },\n    \"purpose\": [\"external_mfa\"]\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party MFA Provider - DUO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractDuoToken\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"duo_provider_id\", jsonData.access_token);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"DUO Security\",\n    \"description\": \"ISV - DUO integration\",\n    \"enabled\": true,\n    \"type\": \"duo\",\n    \"credentialPrefix\": \"duo\",\n    \"webhookId\": \"{{duo_webhook_id}}\",\n    \"uniqueNameAttribute\": \"{{duo_unique_name_attribute}}\",\n    \"capabilities\": [\n        \"smsotp\",\n        \"push\",\n        \"hotp\"\n    ],\n    \"capabilityCacheTtl\": 0\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/factors/config/v1.0/mfaproviders",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"factors",
+						"config",
+						"v1.0",
+						"mfaproviders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party MFA Webhook - iamlab",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"iamlab_webhook_id\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"iamlab MFA Provider\",\n    \"type\": \"realtime\",\n    \"urls\": [\"{{extmfa_webhook_url}}\"],\n    \"authentication\": {\n        \"type\": \"header\",\n        \"header\": {\n            \"values\":[\n                {\n                    \"key\": \"hdr_integration_key\",\n                    \"value\": \"{{duo_integration_key}}\"\n                },\n                {\n                    \"key\": \"hdr_signing_key\",\n                    \"value\": \"{{duo_signing_key}}\"\n                }\n            ]\n        }\n    },\n    \"resources\": {\n        \"test\": {\n            \"suffix\": \"/test\",\n            \"method\": \"GET\"\n        },\n        \"enrollments\": {\n            \"suffix\": \"/enrollments\",\n            \"method\": \"POST\"\n        },\n        \"initiate\": {\n            \"suffix\": \"/initiate\",\n            \"method\": \"POST\"\n        },\n        \"validate\": {\n            \"suffix\": \"/validate\",\n            \"method\": \"POST\"\n        },\n        \"hotp_1\": {\n            \"suffix\": \"/test\",\n            \"method\": \"POST\"\n        },\n        \"result\": {\n            \"suffix\": \"/results\",\n            \"method\": \"GET\"\n        }\n    },\n    \"purpose\": [\"external_mfa\"]\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party MFA Provider - iamlab",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractDuoToken\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"duo_provider_id\", jsonData.access_token);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"iamlab Security\",\n    \"description\": \"ISV - iamlab integration\",\n    \"enabled\": true,\n    \"type\": \"generic\",\n    \"credentialPrefix\": \"iamlab\",\n    \"webhookId\": \"{{iamlab_webhook_id}}\",\n    \"uniqueNameAttribute\": \"{{duo_unique_name_attribute}}\",\n    \"capabilities\": [\n        \"smsotp\",\n        \"push\",\n        \"hotp\"\n    ],\n    \"capabilityCacheTtl\": 0\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/factors/config/v1.0/mfaproviders",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"factors",
+						"config",
+						"v1.0",
+						"mfaproviders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update 3rd Party MFA Provider - DUO Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractDuoToken\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"duo_provider_id\", jsonData.access_token);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"DUO Security\",\n    \"description\": \"ISV - DUO integration\",\n    \"enabled\": true,\n    \"type\": \"duo\",\n    \"credentialPrefix\": \"duo\",\n    \"webhookId\": \"{{duo_webhook_id}}\",\n    \"uniqueNameAttribute\": \"{{duo_unique_name_attribute}}\",\n    \"capabilities\": [\n        \"smsotp\",\n        \"push\",\n        \"hotp\"\n    ],\n    \"capabilityCacheTtl\": 0\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/factors/config/v1.0/mfaproviders/{{duo_provider_id}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"factors",
+						"config",
+						"v1.0",
+						"mfaproviders",
+						"{{duo_provider_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete 3rd Party MFA Provider - DUO Copy",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{tenant}}/factors/config/v1.0/mfaproviders/{{duo_provider_id}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"factors",
+						"config",
+						"v1.0",
+						"mfaproviders",
+						"{{duo_provider_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party Risk Webhook - XFE v1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"risk_webhook_id_xfe\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"risk hook xfe\",\n  \"type\": \"realtime\",\n  \"urls\": [\n    \"{{risk_xfe_webhook_url}}\"\n  ],\n  \"purpose\": [\n    \"external_risk\"\n  ],\n  \"notification\": null\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party Risk Webhook - XFE iamlab",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"risk_webhook_id_xfe\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"risk hook xfe\",\n  \"type\": \"realtime\",\n  \"urls\": [\n    \"{{risk_xfe_webhook_url}}\"\n  ],\n  \"authentication\": {\n        \"type\": \"header\",\n        \"header\": {\n            \"values\":[\n                {\n                    \"key\": \"hdr_integration_key\",\n                    \"value\": \"{{duo_integration_key}}\"\n                },\n                {\n                    \"key\": \"hdr_signing_key\",\n                    \"value\": \"{{duo_signing_key}}\"\n                }\n            ]\n        }\n    },\n  \"purpose\": [\n    \"external_risk\"\n  ],\n  \"notification\": null\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Modify 3rd Party Risk Webhook - XFE",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"risk hook xfe\",\n  \"type\": \"realtime\",\n  \"urls\": [\n    \"{{risk_xfe_webhook_url}}\"\n  ],\n  \"purpose\": [\n    \"external_risk\"\n  ],\n  \"notification\": null\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/{{risk_webhook_id_xfe}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						"{{risk_webhook_id_xfe}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete 3rd Party Risk Webhook - XFE",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{tenant}}/webhooks/v1.0/webhooks-mgmt/{{risk_webhook_id_xfe}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"webhooks",
+						"v1.0",
+						"webhooks-mgmt",
+						"{{risk_webhook_id_xfe}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party Risk Integration - XFE v1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"risk_integration_id_xfe\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"webhookId\": \"{{risk_webhook_id_xfe}}\",\n    \"name\": \"IBM Cloud 3rd Party Risk XFE for MSU\",\n    \"version\": 1,\n        \"evaluationOutboundAttributes\": {\n            \"sessionContext\": {\n                \"uid\": true,\n                \"sessionId\": true,\n                \"emailAddr\": true,\n                \"mobileNumber\": true,\n                \"workNumber\": true,\n                \"deviceId\": true,\n                \"preferredUsername\": true,\n                \"userType\": true,\n                \"groupIds\": true\n            },\n            \"attributeContext\": {\n                \"appId\": true,\n                \"ipAddress\": true,\n                \"userAgent\": true,\n                \"devicePlatform\": true,\n                \"deviceCompliance\": false,\n                \"evaluationContext\": false,\n                \"evaluationData\": false,\n                \"evaluationDataType\": false,\n                \"originalGrantType\": false,\n                \"grantType\": false,\n                \"grantId\": false\n            },\n            \"policyContext\": {\n                \"id\": true,\n                \"policyName\": true,\n                \"contextPolicyId\": false,\n                \"policyEnforcementType\": false,\n                \"contextPolicyName\": false\n            },\n            \"adaptiveContext\": {\n                \"riskScore\": false,\n                \"decision\": false,\n                \"reason\": false,\n                \"reasonId\": false,\n                \"recommendation\": false,\n                \"userBehavioralScore\": false,\n                \"userBehavioralScorePassed\": false,\n                \"newDevice\": false,\n                \"riskyDevice\": false,\n                \"riskyConnection\": false,\n                \"country\": false,\n                \"city\": false,\n                \"isp\": false,\n                \"newLocation\": false,\n                \"behavioralAnomaly\": false,\n                \"continent\": false,\n                \"region\": false,\n                \"browser\": false,\n                \"browserVersion\": false,\n                \"os\": false,\n                \"ruleAction\": false,\n                \"trusteerAvailable\": false,\n                \"adaptiveRiskScoreBasedDecision\": false,\n                \"snippetId\": false,\n                \"previousSuccessfulMFA\": false,\n                \"remoteAccessToolIndication\": false,\n                \"deviceAuthenticationStatus\": false\n            }\n        },\n        \"supportedAttributes\": [],\n        \"integrationProcessingEndpoint\": {\n            \"redirectUri\": \"\"\n        }\n    }\n\n"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/risk-mgmt/config/v1.0/integrations/v1.0/config/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"risk-mgmt",
+						"config",
+						"v1.0",
+						"integrations",
+						"v1.0",
+						"config",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 3rd Party Risk Integration - XFE iamlab",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"extractID\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    var jsonData = pm.response.json();",
+							"    if (jsonData.id) {",
+							"        pm.collectionVariables.set(\"risk_integration_id_xfe\", jsonData.id);",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"webhookId\": \"{{risk_webhook_id_xfe}}\",\n    \"name\": \"IBM Cloud 3rd Party Risk XFE for MSU\",\n    \"version\": 1,\n        \"evaluationOutboundAttributes\": {\n            \"sessionContext\": {\n                \"uid\": true,\n                \"sessionId\": true,\n                \"emailAddr\": true,\n                \"mobileNumber\": true,\n                \"workNumber\": true,\n                \"deviceId\": true,\n                \"preferredUsername\": true,\n                \"userType\": true,\n                \"groupIds\": true\n            },\n            \"attributeContext\": {\n                \"appId\": true,\n                \"ipAddress\": true,\n                \"userAgent\": true,\n                \"devicePlatform\": true,\n                \"deviceCompliance\": false,\n                \"evaluationContext\": false,\n                \"evaluationData\": false,\n                \"evaluationDataType\": false,\n                \"originalGrantType\": false,\n                \"grantType\": false,\n                \"grantId\": false\n            },\n            \"policyContext\": {\n                \"id\": true,\n                \"policyName\": true,\n                \"contextPolicyId\": false,\n                \"policyEnforcementType\": false,\n                \"contextPolicyName\": false\n            },\n            \"adaptiveContext\": {\n                \"riskScore\": false,\n                \"decision\": false,\n                \"reason\": false,\n                \"reasonId\": false,\n                \"recommendation\": false,\n                \"userBehavioralScore\": false,\n                \"userBehavioralScorePassed\": false,\n                \"newDevice\": false,\n                \"riskyDevice\": false,\n                \"riskyConnection\": false,\n                \"country\": false,\n                \"city\": false,\n                \"isp\": false,\n                \"newLocation\": false,\n                \"behavioralAnomaly\": false,\n                \"continent\": false,\n                \"region\": false,\n                \"browser\": false,\n                \"browserVersion\": false,\n                \"os\": false,\n                \"ruleAction\": false,\n                \"trusteerAvailable\": false,\n                \"adaptiveRiskScoreBasedDecision\": false,\n                \"snippetId\": false,\n                \"previousSuccessfulMFA\": false,\n                \"remoteAccessToolIndication\": false,\n                \"deviceAuthenticationStatus\": false\n            },\n            \"customAttributes\": [\n                \"ecifid\"\n            ]\n        },\n        \"supportedAttributes\": [],\n        \"integrationProcessingEndpoint\": {\n            \"redirectUri\": \"\"\n        }\n    }\n\n"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/risk-mgmt/config/v1.0/integrations/v1.0/config/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"risk-mgmt",
+						"config",
+						"v1.0",
+						"integrations",
+						"v1.0",
+						"config",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete 3rd Party Risk Integration - XFE",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{tenant}}/risk-mgmt/config/v1.0/integrations/v1.0/config/{{risk_integration_id_xfe}}",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"risk-mgmt",
+						"config",
+						"v1.0",
+						"integrations",
+						"v1.0",
+						"config",
+						"{{risk_integration_id_xfe}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Risk Access Policies",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "json",
+						"value": "true"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/v5.0/policyvault/accesspolicy/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v5.0",
+						"policyvault",
+						"accesspolicy",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Risk Access Policies Copy",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "x-forwarded-host",
+						"value": "{{tenantId}}",
+						"disabled": true
+					},
+					{
+						"key": "json",
+						"value": "true"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/v5.0/policyvault/accesspolicy/1015315",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v5.0",
+						"policyvault",
+						"accesspolicy",
+						"1015315"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get attribute testcustomattribute",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{tenant}}/v1.0/attributes/testcustomattribute",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v1.0",
+						"attributes",
+						"testcustomattribute"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create attribute XFE-IP-Category",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n    \"name\": \"XFE-IP-Category\",\n    \"sourceType\": \"schema\",\n    \"datatype\": \"string\",\n    \"tags\": [\n        \"sso\",\n        \"prov\"\n    ],\n    \"schemaAttribute\": {\n        \"name\": \"customAttribute34\",\n        \"scimName\": \"xfeipcategory\",\n        \"customAttribute\": true,\n        \"scimFilter\": \"urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes.xfeipcategory\"\n    },\n    \"constraints\": {\n        \"readAccessForEndUser\": false,\n        \"writeAccessForEndUser\": true,\n        \"mandatory\": false,\n        \"unique\": false\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/v1.0/attributes",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v1.0",
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get attribute testcustomattribute Copy",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n    \"name\": \"costcenter_sso\",\n    \"sourceType\": \"rule\",\n    \"datatype\": \"string\",\n    \"tags\": [\n        \"sso\",\n        \"prov\"\n    ],\n    \"credName\": \"costcenter\",\n    \"ruleId\": \"11\",\n    \"args\": {\n        \"name\": \"costcenter\"\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/v1.0/attributes/XFE-IP-Category",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v1.0",
+						"attributes",
+						"XFE-IP-Category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create attribute XFE-IP-Score",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n    \"name\": \"XFE-IP-Score\",\n    \"sourceType\": \"schema\",\n    \"datatype\": \"string\",\n    \"tags\": [\n        \"sso\",\n        \"prov\"\n    ],\n    \"schemaAttribute\": {\n        \"name\": \"customAttribute35\",\n        \"scimName\": \"XFE-IP-Score\",\n        \"customAttribute\": true,\n        \"scimFilter\": \"urn:ietf:params:scim:schemas:extension:ibm:2.0:User:customAttributes.xfeipscore\"\n    },\n    \"constraints\": {\n        \"readAccessForEndUser\": false,\n        \"writeAccessForEndUser\": true,\n        \"mandatory\": false,\n        \"unique\": false\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/v1.0/attributes",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v1.0",
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get attribute testcustomattribute Copy 2",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"type": "text",
+						"value": "Bearer {{access_token}}"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n    \"name\": \"costcenter_sso\",\n    \"sourceType\": \"rule\",\n    \"datatype\": \"string\",\n    \"tags\": [\n        \"sso\",\n        \"prov\"\n    ],\n    \"credName\": \"costcenter\",\n    \"ruleId\": \"11\",\n    \"args\": {\n        \"name\": \"costcenter\"\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/v1.0/attributes/testcustomattribute",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v1.0",
+						"attributes",
+						"testcustomattribute"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Adaptive and XFE IP Reputation Policy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"MSU 2022 Adaptive and XFE IP Reputation\",\n    \"description\": \"\",\n    \"containsFirstFactor\": false,\n    \"rules\": [\n        {\n            \"result\": {\n                \"action\": \"ACTION_MFA_PER_SESSION\",\n                \"serverSideActions\": [\n                    {\n                        \"actionId\": \"N100\",\n                        \"version\": \"0\"\n                    }\n                ],\n                \"authnMethods\": [\n                    \"urn:ibm:security:authentication:asf:macotp\"\n                ]\n            },\n            \"firstFactor\": false,\n            \"name\": \"Adaptive Access\",\n            \"description\": \"\",\n            \"id\": \"1576053166430\",\n            \"alwaysRun\": true,\n            \"conditions\": [\n                {\n                    \"adaptiveRiskScoreAttributes\": [\n                        {\n                            \"values\": [\n                                \"700-1000\"\n                            ],\n                            \"name\": \"very-high-risk-score-range\",\n                            \"action\": \"ACTION_DENY\",\n                            \"opCode\": \"EQ\",\n                            \"authnMethods\": []\n                        },\n                        {\n                            \"values\": [\n                                \"400-699\"\n                            ],\n                            \"name\": \"high-risk-score-range\",\n                            \"action\": \"ACTION_MFA_ALWAYS\",\n                            \"opCode\": \"EQ\",\n                            \"authnMethods\": [\n                                \"urn:ibm:security:authentication:asf:macotp\"\n                            ]\n                        },\n                        {\n                            \"values\": [\n                                \"200-399\"\n                            ],\n                            \"name\": \"medium-risk-score-range\",\n                            \"action\": \"ACTION_MFA_PER_SESSION\",\n                            \"opCode\": \"EQ\",\n                            \"authnMethods\": [\n                                \"urn:ibm:security:authentication:asf:macotp\"\n                            ]\n                        },\n                        {\n                            \"values\": [\n                                \"0-199\"\n                            ],\n                            \"name\": \"low-risk-score-range\",\n                            \"action\": \"ACTION_ALLOW\",\n                            \"opCode\": \"EQ\",\n                            \"authnMethods\": []\n                        }\n                    ],\n                    \"type\": \"adaptiveRiskScoreAttributes\"\n                }\n            ]\n        },\n        {\n            \"id\": \"1\",\n            \"name\": \"External Risk\",\n            \"description\": \"Initiate the 3rd party endpoint\",\n            \"alwaysRun\": true,\n            \"firstFactor\": false,\n            \"conditions\": [\n                {\n                    \"id\": \"{{risk_integration_id_xfe}}\",\n                    \"type\": \"integrationAttributes\"\n                }\n            ],\n            \"result\": {\n                \"action\": \"ACTION_ALLOW\",\n                \"serverSideActions\": [],\n                \"authnMethods\": [\n                    \"urn:ibm:security:authentication:asf:macotp\"\n                ]\n            }\n        },\n        {\n            \"id\": \"1648192243164\",\n            \"name\": \"Botnet Validation\",\n            \"description\": \"\",\n            \"alwaysRun\": false,\n            \"firstFactor\": false,\n            \"conditions\": [\n                {\n                    \"customAttributes\": [\n                        {\n                            \"name\": \"XFE-IP-Category\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"Botnet\"\n                            ]\n                        },\n                        {\n                            \"name\": \"XFE-IP-Score\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"High\"\n                            ]\n                        }\n                    ],\n                    \"type\": \"customAttributes\"\n                }\n            ],\n            \"result\": {\n                \"action\": \"ACTION_DENY\",\n                \"serverSideActions\": [],\n                \"authnMethods\": []\n            }\n        },\n        {\n            \"id\": \"1648192131044\",\n            \"name\": \"Anonymisation Services Validation\",\n            \"description\": \"\",\n            \"alwaysRun\": false,\n            \"firstFactor\": false,\n            \"conditions\": [\n                {\n                    \"customAttributes\": [\n                        {\n                            \"name\": \"XFE-IP-Category\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"Anonymisation\"\n                            ]\n                        },\n                        {\n                            \"name\": \"XFE-IP-Score\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"Medium\"\n                            ]\n                        }\n                    ],\n                    \"type\": \"customAttributes\"\n                }\n            ],\n            \"result\": {\n                \"action\": \"ACTION_MFA_OVERRIDE\",\n                \"serverSideActions\": [],\n                \"authnMethods\": [\n                    \"urn:ibm:security:authentication:asf:macotp\"\n                ]\n            }\n        },\n        {\n            \"id\": \"1648191656455\",\n            \"name\": \"Spam validation\",\n            \"description\": \"\",\n            \"alwaysRun\": false,\n            \"firstFactor\": false,\n            \"conditions\": [\n                {\n                    \"customAttributes\": [\n                        {\n                            \"name\": \"XFE-IP-Category\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"Spam\"\n                            ]\n                        },\n                        {\n                            \"name\": \"XFE-IP-Score\",\n                            \"opCode\": \"STARTS_WITH\",\n                            \"values\": [\n                                \"Medium\"\n                            ]\n                        }\n                    ],\n                    \"type\": \"customAttributes\"\n                }\n            ],\n            \"result\": {\n                \"action\": \"ACTION_MFA_OVERRIDE\",\n                \"serverSideActions\": [],\n                \"authnMethods\": [\n                    \"urn:ibm:security:authentication:asf:macotp\"\n                ]\n            }\n        },\n        {\n            \"id\": \"1648191577254\",\n            \"name\": \"Default rule\",\n            \"description\": \"\",\n            \"alwaysRun\": false,\n            \"firstFactor\": false,\n            \"conditions\": [],\n            \"result\": {\n                \"action\": \"ACTION_ALLOW\",\n                \"serverSideActions\": [],\n                \"authnMethods\": [\n                    \"urn:ibm:security:authentication:asf:macotp\"\n                ]\n            }\n        }\n    ],\n    \"meta\": {\n        \"state\": \"ACTIVE\",\n        \"schema\": \"urn:access:policy:5.0:schema\",\n        \"label\": \"add alwaysRun and default rules\",\n        \"scope\": [\n            \"developers\"\n        ],\n        \"enforcementType\": \"fedSSO\"\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{tenant}}/v5.0/policyvault/accesspolicy/",
+					"protocol": "https",
+					"host": [
+						"{{tenant}}"
+					],
+					"path": [
+						"v5.0",
+						"policyvault",
+						"accesspolicy",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tenant",
+			"value": "<your tenant>"
+		},
+		{
+			"key": "client_id",
+			"value": "<your client_id>"
+		},
+		{
+			"key": "client_secret",
+			"value": "<your client_secret>"
+		},
+		{
+			"key": "webhook_url",
+			"value": "https://webhook.site/9f23616a-0246-4d71-9de7-22cfd40f4b56"
+		},
+		{
+			"key": "duo_integration_key",
+			"value": "<your duo_integration_key>"
+		},
+		{
+			"key": "duo_signing_key",
+			"value": "<your duo_signing_key>"
+		},
+		{
+			"key": "duo_url",
+			"value": "<your duo api url>"
+		},
+		{
+			"key": "duo_unique_name_attribute",
+			"value": "preferred_username"
+		},
+		{
+			"key": "risk_xfe_webhook_url",
+			"value": "https://us-south.functions.appdomain.cloud/api/v1/web/shankarv%40sg.ibm.com_dev/verify.demo/MSU.Risk.XFE",
+			"disabled": true
+		},
+		{
+			"key": "webhook_url_for_transform",
+			"value": "https://api-cb385d00.duosecurity.com"
+		},
+		{
+			"key": "access_token",
+			"value": "bitESrMTRdRcd7bs0Y3YTmU8yYH0MV8XYW10zqNm"
+		},
+		{
+			"key": "notification_webhook_id",
+			"value": "9f32c283-ea85-41d6-b554-e038cab2570c"
+		},
+		{
+			"key": "duo_webhook_id",
+			"value": ""
+		},
+		{
+			"key": "risk_webhook_id_xfe",
+			"value": "7b861ba1-4e47-464d-acf1-106252aa95d7"
+		},
+		{
+			"key": "risk_integration_id_xfe",
+			"value": "6f7becc8-fd9f-4c7c-b377-0f1da4ec730c"
+		},
+		{
+			"key": "webhook_url_for_transform",
+			"value": "https://webhook.site/08217698-9643-4e3f-bc8e-426762ef002e"
+		},
+		{
+			"key": "wh_client_id",
+			"value": "<your client_id>",
+			"type": "string"
+		},
+		{
+			"key": "wh_client_secret",
+			"value": "<your client_secret",
+			"type": "string"
+		},
+		{
+			"key": "risk_xfe_webhook_url",
+			"value": "https://<your risk webhook host>/risk",
+			"type": "string"
+		},
+		{
+			"key": "extmfa_webhook_url",
+			"value": "https://<your extmfa webhook host>",
+			"type": "string"
+		},
+		{
+			"key": "iamlab_webhook_id",
+			"value": ""
+		}
+	]
+}
